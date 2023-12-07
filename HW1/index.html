@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <script src="./vue.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<div class="HW">
+    <form v-if="isActiveTable">
+        <div>
+            <h4>Email</h4>
+            <input type="email" v-model="email">
+        </div>
+        <div>
+            <h4>First Name</h4>
+            <input type="text" v-model="firstName">
+        </div>
+        <div>
+            <h4>Second Name</h4>
+            <input type="text" v-model="secondName">
+        </div>
+        <div>
+            <h4>Phone</h4>
+            <input type="number" v-model="phone">
+        </div>
+        <div>
+            <p>Guests</p>
+            <button @click.prevent="addGuest">+</button>
+        </div>
+        <div class="guests" v-for="(guest, index) in guests">
+            <p>{{guest.name}}{{index}}</p>
+            <input type="text" v-model="guests[index]" @dblclick="removeGuest(index)" >
+        </div>
+        <hr>
+        <button @click.prevent="getForm" 
+         type="submit">Send Form</button>
+    </form>
+
+    <div v-if="!isActiveTable">
+        <table>
+            <tr v-for="(value,key) in invate">
+                <td>{{key}}</td>
+                <td v-if="key !== 'guests'">{{value}}</td>
+                <td v-else>
+                    <ul>
+                        <li v-for="guest in invate.guests">
+                          {{ guest }}
+                        </li>
+                      </ul>
+                </td>
+            </tr>
+        </table>
+
+        <button @click.prevent="getForm" 
+         type="submit">Back</button>
+    </div>
+</div>
+<script>
+    let form = new Vue({
+        el:'.HW',
+        data: {
+            email:'',
+            firstName:'',
+            secondName:'',
+            phone:'',
+            guests: [],
+            isActiveTable: true,
+            invate:{},
+        },
+        methods: {
+            getForm() {
+                this.invate = {
+                    email:this.email,
+                    firstName:this.firstName,
+                    secondName:this.secondName,
+                    phone:this.phone,
+                    guests:this.guests,
+                }              
+                this.isActiveTable = !this.isActiveTable
+            },
+            addGuest() {
+                this.guests.push({
+                    name:'',
+                })
+            },
+            removeGuest(index){
+                this.guests.splice(index,1)
+            },
+        },
+    })
+</script>
+</html>
