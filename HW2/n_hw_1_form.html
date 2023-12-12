@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1</title>
+    <link rel="stylesheet" href="css//bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link href="css/styles.css" rel="stylesheet">
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="sample">
+            <form v-if="!isActiveTable">
+        		<div class="progress">
+					<div class="progress-bar"></div>
+				</div>
+				<div>
+					<div v-for="obj in info" class="form-group">
+	                    <label>{{obj.name}}</label>
+	                    <input v-model="obj.value" type="text" class="form-control">
+	                </div>
+				</div>
+				<button class="btn btn-primary" disabled @click.prevent="changeTab">
+					Send Data
+				</button>
+			</form>
+			<table v-else>
+				<tr v-for="block in info">
+					<td>{{block.value}}</td>
+				</tr>
+			</table>
+		</div>
+		
+    </div>
+	<script>
+		
+		new Vue({
+			el: '.sample',
+			data: {
+				info: [
+					{
+						name: 'name',
+						value: '',
+						pattern: /^[a-zA-Z ]{2,30}$/
+					},
+					{
+						name: 'phone',
+						value: '',
+						pattern: /^[0-9]{7,14}$/
+					},
+					{
+						name: 'email',
+						value: '',
+						pattern: /.+/
+					},
+					{
+						name: 'sf1',
+						value: '',
+						pattern: /.+/
+					},
+					{
+						name: 'sf2',
+						value: '',
+						pattern: /.+/
+					}
+				],
+				valid:{
+					name:null,
+					phone:null,
+					email:null,
+					sf1:null,
+					sf2:null,
+				},
+				currentFill:0,
+				maxFill:5,
+				isActiveTable:false,
+			},
+			methods:{
+				changeTab() {
+					this.isActiveTable = !this.isActiveTable
+				},
+			},
+			computed: {
+				isValid() {
+					this.info.forEach(item=>{
+						if (item.value.length > 0) {
+							if (item.pattern.test(item.value)) {
+								this.valid[item.name] = true
+							} else {
+								this.valid[item.name] = false
+							}
+						}
+						if (item.value.length === 0) {
+							this.valid[item.name] = null
+						}
+					})
+				},
+				fillInput() {
+					let arr = Object.values(this.valid)
+					this.currentFill = arr.filter(item=>item===true).length
+				},
+				chengeBack() {
+					console.log(document.querySelector('.progress-bar'))
+					document.querySelector('.progress-bar').style.width =  `${this.currentFill*20}%`
+				},
+				check () {
+					if (this.currentFill === this.maxFill) {
+						document.querySelector('.btn').removeAttribute("disabled", "disabled")
+					} else {
+						document.querySelector('.btn').setAttribute("disabled", "disabled")
+					}
+				},
+			},
+		});
+	</script>
+</body>
+</html>
