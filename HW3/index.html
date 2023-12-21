@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="./vue.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="hw">
+        <p v-timer:1000.5="onTimer">Первый</p>
+        <p v-timer:1000.5.run="onTimer">Второй</p>
+        <p v-timer:1000="onTimer">Третий</p>
+    </div>
+</body>
+
+<script>
+    Vue.directive('timer', {
+        bind(el,options) {
+            let timer
+            let interval = options.arg
+            let countCycle = false
+        
+            for (let name in options.modifiers) {
+                if (!isNaN(+name)) {
+                    countCycle = parseInt(name)
+                }
+            }
+
+            if (countCycle === false ) {
+                timer = setInterval(()=>{
+                    options.value(el)
+                },interval)
+            }
+
+            if (countCycle && !options.modifiers.run) {
+                let count = 0
+                timer = setInterval(()=>{
+                    options.value(el)
+                    count++
+                    if (count ===5) {
+                    clearInterval(timer)
+                }
+                },interval)
+            }
+            if (countCycle && options.modifiers.run) {
+                setTimeout(()=>{
+                    let count = 0
+                    timer = setInterval(()=>{
+                    options.value(el)
+                    count++
+                    if (count ===5) {
+                    clearInterval(timer)
+                }
+                },interval)
+                }, interval) 
+            }
+
+        },
+    }
+    )
+    new Vue({
+        el:'.hw',
+        data: {
+        },
+        methods: {
+            onTimer(el) {
+                const font = getComputedStyle(el)['font']
+                el.style.fontSize = parseInt(font) + 2 + 'px'
+            },
+        },
+    })
+</script>
+
+</html>
